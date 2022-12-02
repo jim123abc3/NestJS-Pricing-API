@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Report } from './report.entity';
@@ -15,4 +15,23 @@ export class ReportsService {
 
     return this.repo.save(report);
   }
+  async changeApproval(id: string, approved: boolean) {
+    const report = await this.repo.findOne({ where: { id: parseInt(id) } });
+    if (!report){
+      throw new NotFoundException('report not found')
+    }
+
+    report.approved = approved;
+    return this.repo.save(report);
+  }
 }
+
+
+// Find the changeApproval method and refactor findOne to use a 'where' clause and return an integer:
+
+//   async changeApproval(id: string, approved: boolean) {
+//     const report = await this.repo.findOne({ where: { id: parseInt(id) } });
+ 
+//     ...
+ 
+//   }
